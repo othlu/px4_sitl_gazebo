@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 2.8.8 FATAL_ERROR)
+project(px4_sitl_gazebo)
 
-find_package( PkgConfig REQUIRED)
+find_package(catkin REQUIRED)
+find_package(PkgConfig REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(gazebo REQUIRED)
-pkg_check_modules( EIGEN3 REQUIRED eigen3)
-pkg_check_modules( protobuf REQUIRED protobuf )
+find_package(ogre REQUIRED)
+pkg_check_modules(EIGEN3 REQUIRED eigen3)
+pkg_check_modules(protobuf REQUIRED protobuf)
 
-FIND_PACKAGE( Boost 1.40 COMPONENTS system thread REQUIRED )
+find_package(Boost 1.40 COMPONENTS system thread REQUIRED)
 pkg_check_modules(GAZEBO REQUIRED gazebo>=6.0)
 pkg_check_modules(SDF REQUIRED sdformat)
 add_definitions(-std=c++11)
@@ -29,9 +32,13 @@ include_directories(
   ${Boost_INCLUDE_DIR}
   # Hack to work around pkg_check_modules not setting the Eigen dir
   ${Boost_INCLUDE_DIR}/eigen3
-  # Hack to work around pkg_check_modules not setting the OGRE dirs correctly
-  /usr/local/include/OGRE
-  )
+  ${Ogre_INCLUDE_DIR}
+)
+
+link_directories(${GAZEBO_LIBRARY_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/msgs)
+add_subdirectory(msgs)
+
+list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 
 set(enable_mavlink_interface "true")
 set(enable_ground_truth "false")
@@ -45,12 +52,30 @@ add_custom_target(sdf
 	COMMAND python ${scripts_dir}/xacro.py -o  ${rotors_description_dir}/urdf/iris_base.urdf  ${rotors_description_dir}/urdf/iris_base.xacro enable_mavlink_interface:=${enable_mavlink_interface} enable_ground_truth:=${enable_ground_truth} enable_logging:=${enable_logging} rotors_description_dir:=${rotors_description_dir} 
 	COMMAND gz sdf -p  ${rotors_description_dir}/urdf/iris_base.urdf >> ${CMAKE_SOURCE_DIR}/models/iris/iris.sdf
 	COMMAND rm -f ${rotors_description_dir}/urdf/iris_base.urdf
-	)
+)
 
-link_directories(${GAZEBO_LIBRARY_DIRS} ${CMAKE_CURRENT_BINARY_DIR}/msgs)
-add_subdirectory(msgs)
+catkin_package(
+  INCLUDE_DIRS
+    include
+  LIBRARIES
+    rotors_gazebo_controller_interface
+    rotors_gazebo_motor_model
+    rotors_gazebo_multirotor_base_plugin
+    rotors_gazebo_imu_plugin
+    gazebo_opticalFlow_plugin
+    gazebo_lidar_plugin
+    rotors_gazebo_mavlink_interface
+    LiftDragPlugin
+  DEPENDS
+    eigen
+    opencv
+    gazebo
+    protobuf
+)
 
-list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+###########
+## Build ##
+###########
 
 add_library(hello_world SHARED src/hello_world.cc)
 target_link_libraries(hello_world ${GAZEBO_LIBRARIES} ${Boost_SYSTEM_LIBRARY_RELEASE} ${Boost_THREAD_LIBRARY_RELEASE})

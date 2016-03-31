@@ -2,6 +2,10 @@
 
 This is a flight simulator for multirotors, VTOL and fixed wing.
 
+## Catkin Package
+The sitl_gazebo stack is wrapped in a catkin package.
+Build with `catkin build px4_sitl_gazebo`
+
 ## Install Gazebo Simulator
 
 Follow instructions on the [official site](http://gazebosim.org/tutorials?cat=install) to install Gazebo. Mac OS users should install Gazebo 7, Linux users Gazebo 6. Failing to install the right version can render the simulation inoperational.
