@@ -1,4 +1,4 @@
-# Gazebo for PX4 SITL
+# Gazebo for MAVLink SITL
 
 This is a flight simulator for multirotors, VTOL and fixed wing.
 
@@ -8,7 +8,7 @@ Build with `catkin build px4_sitl_gazebo`
 
 ## Install Gazebo Simulator
 
-Follow instructions on the [official site](http://gazebosim.org/tutorials?cat=install) to install Gazebo. Mac OS users should install Gazebo 7, Linux users Gazebo 6. Failing to install the right version can render the simulation inoperational.
+Follow instructions on the [official site](http://gazebosim.org/tutorials?cat=install) to install Gazebo. Mac OS users should install Gazebo 7, Linux users PGazebo 6. Failing to install the right version can render the simulation inoperational.
 
 
 ## Protobuf
@@ -35,7 +35,7 @@ Clone the gazebo plugins repository to your computer. IMPORTANT: If you do not c
 ```bash
 mkdir -p ~/src
 cd src
-git clone https://github.com/PX4/sitl_gazebo.git
+git clone https://github.com/Dronecode/sitl_gazebo.git
 ```
 
 Create a build folder in the top level of your repository:
@@ -87,4 +87,4 @@ Gazebo will now launch when typing 'gazebo' on the shell:
 gazebo
 ```
 
-Start the PX4 SITL executable as documented [in the PX4 SITL documentation](http://dev.px4.io/simulation-gazebo.html). Then insert the IRIS model from the **insert** tab. This should trigger the communication with the PX4 SITL app.
+Please refer to the documentation of the particular flight stack how to run it against this framework.
